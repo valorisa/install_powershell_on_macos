@@ -1,24 +1,23 @@
-# 🚀 Installation de PowerShell sur macOS
+# 🚀 PowerShell Installer for macOS [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Un script pour installer/désinstaller PowerShell sur macOS avec vérification d'intégrité (SHA256).
+> Script pour installer/désinstaller PowerShell sur macOS avec gestion multi-versions et vérification d'intégrité.
 
-## 📋 Fonctionnalités
-- Installation de versions spécifiques de PowerShell
-- Vérification du hash SHA256 pour sécurité
-- Désinstallation en une commande
-- Support Apple Silicon (`osx-arm64`) et Intel (`osx-x64`)
+![Demo](https://via.placeholder.com/800x400.png?text=Exemple+d'installation+PowerShell)
 
-## 🛠️ Utilisation
+## 📦 Fonctionnalités
+- ✅ **Installation de versions spécifiques** (7.4.2, 7.5.0, etc.)
+- 🔍 **Vérification SHA256** pour sécurité maximale
+- 🗑️ **Désinstallation en un clic**
+- 🔄 **Vérification des mises à jour** depuis GitHub
+- 🍏 Support **Apple Silicon** (`osx-arm64`) et **Intel** (`osx-x64`)
+
+---
+
+## 🛠️ Installation du Script
 ```bash
-# Cloner le dépôt (sur macOS)
+# Cloner le dépôt
 git clone https://github.com/valorisa/install_powershell_on_macos.git
 cd install_powershell_on_macos
 
 # Rendre le script exécutable
 chmod +x scripts/install_pwsh_on_macOS.sh
-
-# Installer la version par défaut (Apple Silicon)
-sudo ./scripts/install_pwsh_on_macOS.sh --install
-
-# Désinstaller
-sudo ./scripts/install_pwsh_on_macOS.sh --uninstall
