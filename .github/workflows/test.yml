@@ -1,0 +1,20 @@
+name: Test PowerShell Installer
+   on: [push, pull_request]
+
+   jobs:
+     test:
+       runs-on: macos-latest
+       steps:
+         - name: Checkout code
+           uses: actions/checkout@v4
+
+         - name: Test Installation
+           run: |
+             chmod +x ./scripts/install_pwsh_on_macOS.sh
+             sudo ./scripts/install_pwsh_on_macOS.sh --install
+             pwsh --version
+
+         - name: Test Uninstallation
+           run: |
+             sudo ./scripts/install_pwsh_on_macOS.sh --uninstall
+
