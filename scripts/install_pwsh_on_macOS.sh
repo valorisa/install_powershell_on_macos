@@ -3,10 +3,11 @@
 # Description : Installe/désinstalle PowerShell sur macOS avec gestion multi-versions et vérification des mises à jour
 # Auteur : valorisa
 # Licence : MIT
-# Usage : 
+# Usage :
 #   Installation : sudo ./install_pwsh_on_macOS.sh --install [version] [arch] [hash]
 #   Désinstallation : sudo ./install_pwsh_on_macOS.sh --uninstall
 #   Vérification mises à jour : ./install_pwsh_on_macOS.sh --check-updates
+#   Afficher la version actuelle : ./install_pwsh_on_macOS.sh --version
 
 # Configuration par défaut (Apple Silicon)
 DEFAULT_VERSION="7.5.0"
@@ -26,10 +27,24 @@ show_help() {
     echo -e "  ${GREEN}sudo ./install_pwsh_on_macOS.sh --install [version] [arch] [hash]${NC}"
     echo -e "  ${GREEN}sudo ./install_pwsh_on_macOS.sh --uninstall${NC}"
     echo -e "  ${GREEN}./install_pwsh_on_macOS.sh --check-updates${NC}"
+    echo -e "  ${GREEN}./install_pwsh_on_macOS.sh --version${NC}"
     echo -e "\n${CYAN}Exemples :${NC}"
     echo -e "  Installation Apple Silicon : ${YELLOW}sudo ./install_pwsh_on_macOS.sh --install 7.5.0 osx-arm64 d50eb1c9...${NC}"
     echo -e "  Installation Intel : ${YELLOW}sudo ./install_pwsh_on_macOS.sh --install 7.4.2 osx-x64 6d29605e...${NC}"
     echo -e "  Vérification mises à jour : ${YELLOW}./install_pwsh_on_macOS.sh --check-updates${NC}"
+    echo -e "  Afficher la version actuelle : ${YELLOW}./install_pwsh_on_macOS.sh --version${NC}"
+}
+
+# Vérifier les dépendances
+check_dependencies() {
+    if ! command -v curl &> /dev/null; then
+        echo -e "${RED}✗ curl n'est pas installé. Veuillez l'installer et réessayer.${NC}"
+        exit 1
+    fi
+    if ! command -v shasum &> /dev/null; then
+        echo -e "${RED}✗ shasum n'est pas installé. Veuillez l'installer et réessayer.${NC}"
+        exit 1
+    fi
 }
 
 # Désinstaller PowerShell
@@ -47,17 +62,22 @@ uninstall_pwsh() {
 check_updates() {
     echo -e "\n${CYAN}➤ Vérification des mises à jour...${NC}"
     echo -e "${YELLOW}Connexion à GitHub...${NC}"
-    
-    # Récupérer la dernière version via l'API GitHub
     LATEST_VERSION=$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest | grep -oP '"tag_name": "\Kv?\d+\.\d+\.\d+')
-    
     if [ -z "$LATEST_VERSION" ]; then
         echo -e "${RED}✗ Impossible de récupérer la dernière version.${NC}"
         return 1
     fi
-
     echo -e "\n${GREEN}✓ Dernière version disponible : ${CYAN}$LATEST_VERSION${NC}"
     echo -e "${YELLOW}Astuce : Utilisez '--install $LATEST_VERSION' pour mettre à jour.${NC}"
+}
+
+# Afficher la version actuelle
+show_version() {
+    if [ -f "/usr/local/bin/pwsh" ]; then
+        pwsh --version
+    else
+        echo -e "${YELLOW}⚠ PowerShell n'est pas installé.${NC}"
+    fi
 }
 
 # Installer PowerShell
@@ -92,7 +112,6 @@ install_pwsh() {
         echo -e "${RED}✗ Échec de l'extraction de l'archive.${NC}" >&2
         return 1
     fi
-    
     sudo mv -f "$temp_dir/pwsh" "/usr/local/bin/pwsh" && \
     sudo chmod +x "/usr/local/bin/pwsh"
 
@@ -115,8 +134,12 @@ case "$1" in
     "--check-updates")
         check_updates
         ;;
+    "--version")
+        show_version
+        ;;
     "--help"|*)
         show_help
         exit 0
         ;;
 esac
+
